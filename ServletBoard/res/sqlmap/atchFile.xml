@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="atchFile"> 
+
+	<resultMap class="kr.or.ddit.cmm.vo.AtchFileVO" id="atchFileMap">
+		<result property="atchFileId" 	  column="ATCH_FILE_ID" />
+		<result property="fileSn" 		  column="FILE_SN" />
+		<result property="fileStreCours"  column="FILE_STRE_COURS" />
+		<result property="streFileNm" 	  column="STRE_FILE_NM" />
+		<result property="orignlFileNm"   column="ORIGNL_FILE_NM" />
+		<result property="fileExtsn" 	  column="FILE_EXTSN" />
+		<result property="fileCn" 		  column="FILE_CN" />
+		<result property="fileSize" 	  column="FILE_SIZE" />
+	</resultMap>
+	
+	<select id="getAtchFileList" parameterClass="kr.or.ddit.cmm.vo.AtchFileVO" resultMap="atchFileMap">
+		SELECT * 
+		FROM ATCH_FILE_DETAIL
+		WHERE ATCH_FILE_ID = #atchFileId#
+	</select>
+
+	<select id="getAtchFileDetail" parameterClass="kr.or.ddit.cmm.vo.AtchFileVO" resultMap="atchFileMap">
+		SELECT * 
+		FROM ATCH_FILE_DETAIL
+		WHERE ATCH_FILE_ID = #atchFileId# 
+		  AND FILE_SN = #fileSn#
+	</select>
+	
+	<insert id="insertAtchFile" parameterClass="kr.or.ddit.cmm.vo.AtchFileVO">
+		
+		<!-- 마스터 테이블 ATCH_FILE에 인서트 한 뒤에 ATCH_FILE_DETAIL에도 때려줘야 한다. 시퀀스 키값 얻어내는 쿼리 / 첫번째 인서트 쿼리 / 두번째 인서트 쿼리-->
+		<!-- 키값을 쉽게 얻어낼 수 있는 selectKey를 사용한다. key 값을 얻어낸 다음 keyProperty에 담아 인서트 전에 VO에 넣어놓는다.-->
+		<selectKey keyProperty="atchFileId" resultClass="long">
+			SELECT ATCH_FILE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		
+		INSERT INTO ATCH_FILE 
+		(
+			ATCH_FILE_ID
+			,CREAT_DT
+			,USE_AT
+		)
+		VALUES
+		(
+			#atchFileId#
+			,SYSDATE
+			,'Y'
+		)
+		
+	</insert>
+	
+	<insert id="insertAtchFileDetail" parameterClass="kr.or.ddit.cmm.vo.AtchFileVO">
+		INSERT INTO ATCH_FILE_DETAIL
+		(
+			ATCH_FILE_ID
+			,FILE_SN
+			,FILE_STRE_COURS
+			,STRE_FILE_NM
+			,ORIGNL_FILE_NM
+			,FILE_EXTSN
+			,FILE_CN
+			,FILE_SIZE
+		)
+		VALUES
+		(
+			#atchFileId#
+			,(SELECT NVL(MAX(FILE_SN), 0) + 1
+			  FROM ATCH_FILE_DETAIL
+			  WHERE ATCH_FILE_ID = #atchFileId#)
+			,#fileStreCours#
+			,#streFileNm#
+			,#orignlFileNm#
+			,#fileExtsn#
+			,#fileCn#
+			,#fileSize#
+		)
+		
+	</insert>
+	
+</sqlMap>			
+
+	
+
+
+

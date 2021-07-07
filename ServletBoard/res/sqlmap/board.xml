@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="board"> 
+
+	<!-- 전체 게시글 불러오기 -->
+	<select id="getBoardList" resultClass="board.vo.BoardVO">
+		SELECT AA.*
+		FROM
+			(SELECT A.*, ROWNUM AS RN
+			 FROM
+				 (SELECT 
+					 BOARD_NO							boardNo
+					 ,BOARD_TITLE 						boardTitle
+					 ,BOARD_WRITER						boardWriter
+					 ,TO_CHAR(BOARD_DATE, 'YYYY-MM-DD')	boardDate
+					 ,BOARD_CONTENT						boardContent
+				  FROM JDBC_BOARDING
+				  ORDER BY BOARD_NO DESC) A) AA
+		WHERE AA.RN BETWEEN #firstRecNo# AND #lastRecNo#
+	</select>
+	
+	<!-- 게시글 읽기 -->
+	<select id="getBoard" resultClass="boardVO">
+		SELECT 
+			BOARD_NO							boardNo
+			,BOARD_TITLE 						boardTitle
+			,BOARD_WRITER						boardWriter
+			,TO_CHAR(BOARD_DATE, 'YYYY-MM-DD')	boardDate
+			,BOARD_CONTENT						boardContent
+		FROM JDBC_BOARDING
+		WHERE BOARD_NO = #boardNo#
+	</select>
+	
+	<!-- 게시글 검색 -->
+	<select id="searchBoardList" resultClass="board.vo.BoardVO" parameterClass="board.vo.BoardVO">
+		SELECT AA.*
+		FROM
+			(SELECT A.*, ROWNUM AS RN
+			 FROM
+				 (SELECT 
+					 BOARD_NO							boardNo
+					 ,BOARD_TITLE 						boardTitle
+					 ,BOARD_WRITER						boardWriter
+					 ,TO_CHAR(BOARD_DATE, 'YYYY-MM-DD')	boardDate
+					 ,BOARD_CONTENT						boardContent
+				  FROM JDBC_BOARDING
+				  WHERE 1=1
+					<isNotEmpty property="boardTitle">
+						AND BOARD_TITLE LIKE '%' || #boardTitle# || '%'
+					</isNotEmpty>
+					<isNotEmpty property="boardWriter">
+						AND BOARD_WRITER LIKE '%' || #boardWriter# || '%'
+					</isNotEmpty>
+					<isNotEmpty property="boardContent">
+						AND BOARD_CONTENT LIKE '%' || #boardContent# || '%'
+					</isNotEmpty>
+				  ORDER BY BOARD_NO DESC) A) AA
+		WHERE AA.RN BETWEEN #firstRecNo# AND #lastRecNo#
+	</select>
+	
+	<!-- 게시글 수 세기-->
+	<select id="countBoard" resultClass="int" parameterClass="board.vo.BoardVO">
+		SELECT COUNT(*)
+		FROM JDBC_BOARDING
+		WHERE 1=1
+			<isNotEmpty property="boardTitle">
+				AND BOARD_TITLE LIKE '%' || #boardTitle# || '%'
+			</isNotEmpty>
+			<isNotEmpty property="boardWriter">
+				AND BOARD_WRITER LIKE '%' || #boardWriter# || '%'
+			</isNotEmpty>
+			<isNotEmpty property="boardContent">
+				AND BOARD_CONTENT LIKE '%' || #boardContent# || '%'
+			</isNotEmpty>
+	</select>
+	
+	<!-- 게시글 쓰기 -->
+	<insert id="insertBoard" parameterClass="boardVO">
+		INSERT INTO JDBC_BOARDING
+			(
+			 BOARD_NO
+			 ,BOARD_TITLE
+			 ,BOARD_WRITER
+			 ,BOARD_DATE
+			 ,BOARD_CONTENT
+			)
+		VALUES
+			(
+			 BOARD_SEQ.NEXTVAL
+			 ,#boardTitle#
+			 ,#boardWriter#
+			 ,SYSDATE
+			 ,#boardContent#
+			) 
+	</insert>
+	
+	<!-- 게시글 수정하기 -->
+	<update id="updateBoard" parameterClass="boardVO">
+		UPDATE JDBC_BOARDING SET
+			BOARD_TITLE = #boardTitle#
+			,BOARD_DATE = SYSDATE
+			,BOARD_CONTENT = #boardContent#
+		WHERE BOARD_NO = #boardNo#
+	</update>
+	
+	<!-- 게시글 삭제하기 -->
+	<delete id="deleteBoard">
+		DELETE FROM JDBC_BOARDING 
+		WHERE BOARD_NO = #boardNo#
+	</delete>
+	
+</sqlMap>

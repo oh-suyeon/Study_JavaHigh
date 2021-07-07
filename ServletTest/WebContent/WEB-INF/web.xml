@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+    <display-name>ServletTest</display-name>
+  
+	<servlet>
+		<servlet-name>T01_ServletLifeCycle</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T01_ServletLifeCycle</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>T01_ServletLifeCycle</servlet-name>
+		<url-pattern>/T01_ServletLifeCycle</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>T02_ServletTest</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T02_ServletTest</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>T02_ServletTest</servlet-name>
+		<url-pattern>/T02_ServletTest</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>T03_ServletParameterTest</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T03_ServletParameterTest</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>T03_ServletParameterTest</servlet-name>
+		<url-pattern>/T03_ServletParameterTest</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ErrorHandler</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T04_ErrorHandler</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>ErrorHandler</servlet-name>
+		<url-pattern>/ErrorHandler</url-pattern>
+	</servlet-mapping>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/ErrorHandler</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/ErrorHandler</location>
+	</error-page>
+	
+	<servlet>
+		<servlet-name>T05_ServletCookieTest</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T05_ServletCookieTest</servlet-class>	
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>T05_ServletCookieTest</servlet-name>
+		<url-pattern>/T05_ServletCookieTest</url-pattern>
+	</servlet-mapping>
+		
+	<servlet>
+		<servlet-name>T06_ServletSessionTest</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T06_ServletSessionTest</servlet-class>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>T06_ServletSessionTest</servlet-name>
+		<url-pattern>/T06_ServletSessionTest</url-pattern>
+	</servlet-mapping>
+	
+	<session-config>
+		<session-timeout>1</session-timeout>
+	</session-config>
+	
+	<servlet>
+		<servlet-name>T07_ServletContextTest</servlet-name>
+		<servlet-class>kr.or.ddit.basic.T07_ServletContextTest</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>T07_ServletContextTest</servlet-name>
+		<url-pattern>/T07_ServletContextTest</url-pattern>
+	</servlet-mapping>	
+	 
+	<filter>
+		<filter-name>LogFilter</filter-name>
+		<filter-class>kr.or.ddit.basic.T08_ServletFilterTest</filter-class>
+		<init-param>
+			<param-name>init-param</param-name>
+			<param-value>로그 필터입니다.</param-value> <!-- 의미 있는 설정 정보를 주면 된다. DB 접속 정보 같은 거-->
+		</init-param>
+	</filter>
+
+	
+	<filter-mapping>
+		<filter-name>LogFilter</filter-name>
+		<url-pattern>/*</url-pattern> <!-- /는 루트. 모든 요청을 다 포함해 필터를 실행시킨다. -->
+	</filter-mapping>	
+	
+	<filter> <!-- 필터는 선언 순서에 따라 실행된다. LogFilter부터 먼저 걸린다. -->
+		<filter-name>CalcTimeFilter</filter-name>
+		<filter-class>kr.or.ddit.basic.T08_ServletFilterTest2</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>CalcTimeFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>	
+	 
+	 <filter>
+	 	<filter-name>CharacterEncoding</filter-name>
+	 	<filter-class>kr.or.ddit.basic.CustomCharacterEncoding</filter-class>
+	 	<init-param>
+	 		<param-name>encoding</param-name>
+	 		<param-value>UTF-8</param-value>
+	 	</init-param>
+	 	
+	 </filter>
+	 
+	 <filter-mapping>
+	 	<filter-name>CharacterEncoding</filter-name>
+	 	<url-pattern>/*</url-pattern>
+	 </filter-mapping>
+	 
+	 <listener>
+	 	<display-name>MyServletContextListener</display-name>
+	 	<listener-class>kr.or.ddit.basic.MyServletContextListener</listener-class>
+	 </listener>
+
+	 <listener>
+	 	<display-name>MyServletRequestListener</display-name>
+	 	<listener-class>kr.or.ddit.basic.MyServletRequestListener</listener-class>
+	 </listener>
+
+	 <listener>
+	 	<display-name>MySessionListener</display-name>
+	 	<listener-class>kr.or.ddit.basic.MySessionListener</listener-class>
+	 </listener>
+	 
+	 <servlet>
+	 	<servlet-name>T09_ServletContextListenerTest</servlet-name>
+	 	<servlet-class>kr.or.ddit.basic.T09_ServletContextListenerTest</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>T09_ServletContextListenerTest</servlet-name>
+	 	<url-pattern>/T09_ServletContextListenerTest</url-pattern>
+	 </servlet-mapping>
+	 
+	 <servlet>
+	 	<servlet-name>T10_ServletRequestListenerTest</servlet-name>
+	 	<servlet-class>kr.or.ddit.basic.T10_ServletRequestListenerTest</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>T10_ServletRequestListenerTest</servlet-name>
+	 	<url-pattern>/T10_ServletRequestListenerTest</url-pattern>
+	 </servlet-mapping>
+	 
+	 <servlet>
+	 	<servlet-name>T11_SessionListenerTest</servlet-name>
+	 	<servlet-class>kr.or.ddit.basic.T11_SessionListenerTest</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>T11_SessionListenerTest</servlet-name>
+	 	<url-pattern>/T11_SessionListenerTest</url-pattern>
+	 </servlet-mapping>
+	 
+	 <servlet>
+	 	<servlet-name>SelectAllMemberServlet</servlet-name>
+	 	<servlet-class>kr.or.ddit.member.controller.SelectAllMemberServlet</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>SelectAllMemberServlet</servlet-name>
+	 	<url-pattern>/member/list</url-pattern>
+	 </servlet-mapping>
+	 
+	 <servlet>
+	 	<servlet-name>InsertMemberServlet</servlet-name>
+	 	<servlet-class>kr.or.ddit.member.controller.InsertMemberServlet</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>InsertMemberServlet</servlet-name>
+	 	<url-pattern>/member/insert</url-pattern>
+	 </servlet-mapping>
+	 
+	 <servlet>
+	 	<servlet-name>updateMemberServlet</servlet-name>
+	 	<servlet-class>kr.or.ddit.member.controller.updateMemberServlet</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>updateMemberServlet</servlet-name>
+	 	<url-pattern>/member/update</url-pattern>
+	 </servlet-mapping>
+
+	 <servlet>
+	 	<servlet-name>ViewMemberServlet</servlet-name>
+	 	<servlet-class>kr.or.ddit.member.controller.ViewMemberServlet</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>ViewMemberServlet</servlet-name>
+	 	<url-pattern>/member/detail</url-pattern>
+	 </servlet-mapping>
+
+	 <servlet>
+	 	<servlet-name>DeleteMemberServlet</servlet-name>
+	 	<servlet-class>kr.or.ddit.member.controller.DeleteMemberServlet</servlet-class>
+	 </servlet>
+	 
+	 <servlet-mapping>
+	 	<servlet-name>DeleteMemberServlet</servlet-name>
+	 	<url-pattern>/member/delete</url-pattern>
+	 </servlet-mapping>
+</web-app>

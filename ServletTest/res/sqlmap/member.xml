@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="member"> 
+
+	<insert id="insertMember" parameterClass="memVO">
+		
+		INSERT INTO MYMEMBER
+		(MEM_ID, MEM_NAME, MEM_TEL, MEM_ADDR)
+		VALUES (#memId#, #memName#, #memTel#, #memAddr#)
+		 
+	</insert>
+		
+	<update id="updateMember" parameterClass="memVO"> <!-- parameterClass는 적어도 되고 안 적어도 된다. 파라미터로 던져주는 객체를 보고 어느정도 유추한다.  -->
+		
+		UPDATE MYMEMBER
+		SET MEM_NAME = #memName# , MEM_TEL = #memTel# , MEM_ADDR = #memAddr# 
+		WHERE MEM_ID = #memId# 
+	
+	</update>
+	
+	<delete id="deleteMember" parameterClass="String"> 
+		
+		DELETE FROM MYMEMBER WHERE MEM_ID = #memId#
+		
+	</delete>
+	
+	<resultMap class="memVO" id="memberMap">
+		<result property="memId" column="MEM_ID"/>
+		<result property="memName" column="MEM_NAME"/>
+		<result property="memTel" column="MEM_TEL"/>
+		<result property="memAddr" column="MEM_ADDR"/>
+	</resultMap>
+	
+	<select id="getMemberAll" resultMap="memberMap">
+		
+		SELECT MEM_ID
+				, MEM_NAME 
+				, MEM_TEL 
+				, MEM_ADDR 
+		FROM MYMEMBER
+		
+	</select>
+	
+	<select id="checkMember" resultClass="int">
+		
+		SELECT COUNT(*) AS CNT FROM MYMEMBER
+		WHERE MEM_ID = #memId#
+		
+	</select>
+
+	<select id="getMember" resultMap="memberMap">
+		
+		SELECT * FROM MYMEMBER
+		WHERE MEM_ID = #memId#
+		
+	</select>
+	
+	<select id="getSearchMemberList" parameterClass="memVO" resultMap="memberMap">
+		
+		SELECT * FROM MYMEMBER WHERE 1=1 
+		<isNotEmpty property="memId">
+			 AND MEM_ID = #memId# 
+		</isNotEmpty>
+		<isNotEmpty property="memName">
+			 AND MEM_NAME = #memName# 
+		</isNotEmpty>
+		<isNotEmpty property="memTel">
+			 AND MEM_TEL = #memTel# 
+		</isNotEmpty>
+		<isNotEmpty property="memAddr">
+			 AND MEM_ADDR LIKE '%' || #memAddr# || '%' 
+		</isNotEmpty>
+		
+	</select>
+	
+</sqlMap>			
+
+
+
+
+

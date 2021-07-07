@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="memberTest"> 
+<!-- 
+
+	이 영역에 sql문에 맞는태그를 사용하여 SQL문을 기술한다.
+	사용할 수 있난 기본적인 태그들
+	
+	<select></select>
+	<insert></insert>
+	<update></update>
+	<delete></delete>
+	
+	위 태그에서 사용하는 속성들 (ibatis가 실행되기 위해 필요한 정보들...)
+	
+	1) id : 해당 태그를 "호출"할 때 <sqlMap> 태그의 namespace와 연결해서 쓰는 이름. 이름을 알아야 호출해서 실행하니까. 
+	2) parameterClass : sql문에 사용될 데이터가 들어있는 객체를 지정. 즉, 쿼리를 실행하는 시점에 던져주는 파라미터 값이 어떤 자료형인지 알려준다. 
+						(보통 VO클래스, 자바의 자료형 이름 등이 사용된다.)
+	3) resultClass : select문을 실행한 결과를 담을 개체를 지정한다. 어떤 타입인지 알려줘야 잘 넣어준다.  
+					 (보통 VO클래스나 자바의 자료형 이름을 사용한다.)
+	4) resultMap : 결과 레코드 컬럼명과 VO객체의 property명이 다를 경우에 적절한 매핑을 위해 사용한다. 
+	 
+	
+-->
+
+	<!-- insert 연습 -->
+	<insert id="insertMember" parameterClass="memVO">
+		
+		INSERT INTO MYMEMBER
+		(MEM_ID, MEM_NAME, MEM_TEL, MEM_ADDR)
+		VALUES (#memId#, #memName#, #memTel#, #memAddr#)
+		<!-- ## 안에 적어주기. 멤버 VO 객체 안에 원하는 데이터가 들어있구나, 생각함. 이름을 가지고 getter를 유추함. memberVO의 getter setter를 가져온다. -->
+		 
+	</insert>
+		
+	<update id="updateMember" parameterClass="memVO"> <!-- parameterClass는 적어도 되고 안 적어도 된다. 파라미터로 던져주는 객체를 보고 어느정도 유추한다.  -->
+		
+		UPDATE MYMEMBER
+		SET MEM_NAME = #memName# , MEM_TEL = #memTel# , MEM_ADDR = #memAddr# 
+		WHERE MEM_ID = #memId# 
+	
+	</update>
+	
+	<!-- 
+		parameterClass에 설정된 값이단일값(즉 1개의 데이터)이면, 
+		SQL 문에 이 값을 나타내는 변수는 특별히 이름이 정해지지 않았다. 
+		즉, 사용자가 임의로 지정할 수있다. 
+	 -->
+	<delete id="deleteMember" parameterClass="String"> 
+		
+		DELETE FROM MYMEMBER WHERE MEM_ID = #memId# <!-- #aaa#여도 괜찮다. -->
+		
+	</delete>
+	
+	<!-- select 연습 
+	<select id="getMemberAll" resultClass="memVO">
+		
+		SELECT MEM_ID as memId
+				, MEM_NAME as memName
+				, MEM_TEL as memTel
+				, MEM_ADDR as memAddr
+		 FROM MYMEMBER
+		
+	</select>
+	-->
+	
+	<resultMap class="memVO" id="memberMap">
+		<result property="memId" column="MEM_ID"/>
+		<result property="memName" column="MEM_NAME"/>
+		<result property="memTel" column="MEM_TEL"/>
+		<result property="memAddr" column="MEM_ADDR"/>
+	</resultMap>
+	
+	<select id="getMemberAll" resultMap="memberMap">
+		
+		SELECT MEM_ID
+				, MEM_NAME 
+				, MEM_TEL 
+				, MEM_ADDR 
+		FROM MYMEMBER
+		
+	</select>
+	
+	<select id="getMember" resultMap="memberMap">
+		
+		SELECT * FROM MYMEMBER
+		WHERE MEM_ID = #memId#
+		
+	</select>
+	
+</sqlMap>			
+
+
+
+
+
